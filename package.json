@@ -1,0 +1,53 @@
+{
+  "name": "@mcp/core",
+  "version": "0.1.0",
+  "description": "Platform-agnostic Model Context Protocol integration for LAMA",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server/*": {
+      "import": "./dist/server/*.js",
+      "types": "./dist/server/*.d.ts"
+    },
+    "./tools/*": {
+      "import": "./dist/tools/*.js",
+      "types": "./dist/tools/*.d.ts"
+    },
+    "./interface/*": {
+      "import": "./dist/interface/*.js",
+      "types": "./dist/interface/*.d.ts"
+    },
+    "./recipes/*": {
+      "import": "./dist/recipes/*.js",
+      "types": "./dist/recipes/*.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.20.2"
+  },
+  "peerDependencies": {
+    "@refinio/one.core": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "lama",
+    "one.core"
+  ],
+  "author": "",
+  "license": "MIT"
+}
