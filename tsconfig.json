@@ -19,6 +19,9 @@
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "baseUrl": ".",
+    "paths": {
+      "@refinio/*": ["./packages/*"]
+    },
     "types": ["node"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.js"],

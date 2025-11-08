@@ -9,6 +9,8 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
+import { getIdObject, storeVersionedObject } from '@refinio/one.core/lib/storage-versioned-objects.js';
+import { calculateIdHashOfObj } from '@refinio/one.core/lib/util/object.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -84,8 +86,8 @@ class MCPManager {
     }
 
     try {
-      const { getIdObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
-      const { calculateIdHashOfObj } = await import('@refinio/one.core/lib/util/object.js');
+      // Using static import
+      // Using static import
 
       // Get user email for config lookup
       const userEmail = this.nodeOneCore.ownerId; // Using owner ID as identifier
@@ -150,8 +152,8 @@ class MCPManager {
     }
 
     try {
-      const { storeVersionedObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
-      const { calculateIdHashOfObj } = await import('@refinio/one.core/lib/util/object.js');
+      // Using static import
+      // Using static import
 
       const userEmail = this.nodeOneCore.ownerId;
 
@@ -163,7 +165,7 @@ class MCPManager {
         updatedAt: 0
       });
 
-      const { getIdObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
+      // Using static import
       let config: any;
       let isNewConfig = false;
 
@@ -226,9 +228,9 @@ class MCPManager {
     }
 
     try {
-      const { storeVersionedObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
-      const { calculateIdHashOfObj } = await import('@refinio/one.core/lib/util/object.js');
-      const { getIdObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
+      // Using static import
+      // Using static import
+      // Using static import
 
       const userEmail = this.nodeOneCore.ownerId;
 
@@ -307,9 +309,9 @@ class MCPManager {
     }
 
     try {
-      const { storeVersionedObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
-      const { calculateIdHashOfObj } = await import('@refinio/one.core/lib/util/object.js');
-      const { getIdObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
+      // Using static import
+      // Using static import
+      // Using static import
 
       // Find the existing server
       const serverIdHash = await calculateIdHashOfObj({
@@ -382,9 +384,9 @@ class MCPManager {
     }
 
     try {
-      const { storeVersionedObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
-      const { calculateIdHashOfObj } = await import('@refinio/one.core/lib/util/object.js');
-      const { getIdObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
+      // Using static import
+      // Using static import
+      // Using static import
 
       const userEmail = this.nodeOneCore.ownerId;
 
@@ -749,7 +751,7 @@ class MCPManager {
       return;
     }
 
-    const { storeVersionedObject } = await import('@refinio/one.core/lib/storage-versioned-objects.js');
+    // Using static import
 
     const mcpToolCall = {
       $type$: 'MCPToolCall',
