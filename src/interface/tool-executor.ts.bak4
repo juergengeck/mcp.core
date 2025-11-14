@@ -1057,11 +1057,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     references?: any[]
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.createSubject({
+      const result = await this.deps.subjectsHandler.createSubject({
         name,
         createdBy,
         confidence,
@@ -1081,11 +1081,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     context?: any
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.attachSubject({
+      const result = await this.deps.subjectsHandler.attachSubject({
         subjectName,
         contentHash,
         attachedBy,
@@ -1100,11 +1100,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getSubjectsForContent(contentHash: string): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.getForContent({ contentHash });
+      const result = await this.deps.subjectsHandler.getForContent({ contentHash });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1113,11 +1113,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async searchSubjects(query: string, limit = 10): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.search({ query, limit });
+      const result = await this.deps.subjectsHandler.search({ query, limit });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1126,11 +1126,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getAllSubjects(): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.getAll({});
+      const result = await this.deps.subjectsHandler.getAll({});
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1142,11 +1142,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     topK = 10
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.getResonance({ subjectNames, topK });
+      const result = await this.deps.subjectsHandler.getResonance({ subjectNames, topK });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1159,11 +1159,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     minConfidence = 0.5
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.extract({ text, extractor, minConfidence });
+      const result = await this.deps.subjectsHandler.extract({ text, extractor, minConfidence });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);

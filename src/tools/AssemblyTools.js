@@ -1,30 +1,34 @@
 /**
- * Cube MCP Tools
- * Provides access to CubeStorage and Assembly system operations
+ * Assembly MCP Tools
+ * Provides MCP wrapper around assembly.core operations
  *
- * Exposes cube.core handlers as MCP tools for:
+ * Exposes assembly.core handlers as MCP tools for:
  * - Assembly creation and management
  * - Plan storage and retrieval
- * - Supply/Demand tracking
+ * - Supply/Demand matching and tracking
  * - Story (audit trail) generation
+ *
+ * Purpose: Creates audit trail for all LLM interactions with Assembly system
  */
 
-export class CubeTools {
+export class AssemblyTools {
   constructor(nodeOneCore) {
     this.nodeOneCore = nodeOneCore
-    this.cubeManager = null
+    this.assemblyManager = null
   }
 
   /**
-   * Initialize with CubeManager instance
+   * Initialize with AssemblyManager instance
    */
   async init() {
-    // CubeManager is initialized in NodeOneCore
-    // Access it through nodeOneCore.cubeManager
-    this.cubeManager = this.nodeOneCore.cubeManager
+    // AssemblyManager is initialized in NodeOneCore
+    // Access it through nodeOneCore.assemblyManager
+    this.assemblyManager = this.nodeOneCore.assemblyManager
 
-    if (!this.cubeManager) {
-      console.warn('[CubeTools] CubeManager not available')
+    if (!this.assemblyManager) {
+      console.warn('[AssemblyTools] AssemblyManager not available - assembly tools will be disabled')
+    } else {
+      console.log('[AssemblyTools] Initialized with AssemblyManager')
     }
   }
 
@@ -34,7 +38,7 @@ export class CubeTools {
   getToolDefinitions() {
     return [
       {
-        name: 'cube:createSupply',
+        name: 'assembly:createSupply',
         description: 'Create a Supply (capability/resource) in the Assembly system',
         inputSchema: {
           type: 'object',
@@ -57,7 +61,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:createDemand',
+        name: 'assembly:createDemand',
         description: 'Create a Demand (requirement/need) in the Assembly system',
         inputSchema: {
           type: 'object',
@@ -80,7 +84,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:createAssembly',
+        name: 'assembly:createAssembly',
         description: 'Create an Assembly (matches Supply to Demand) in the Assembly system',
         inputSchema: {
           type: 'object',
@@ -107,7 +111,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:createPlan',
+        name: 'assembly:createPlan',
         description: 'Create a Plan (learned pattern from Assemblies)',
         inputSchema: {
           type: 'object',
@@ -135,7 +139,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:createStory',
+        name: 'assembly:createStory',
         description: 'Create a Story (audit trail/narrative) for an Assembly or Plan',
         inputSchema: {
           type: 'object',
@@ -158,7 +162,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:queryAssemblies',
+        name: 'assembly:queryAssemblies',
         description: 'Query Assemblies from the Cube storage',
         inputSchema: {
           type: 'object',
@@ -177,7 +181,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:queryPlans',
+        name: 'assembly:queryPlans',
         description: 'Query Plans from the Cube storage',
         inputSchema: {
           type: 'object',
@@ -196,7 +200,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:getAssembly',
+        name: 'assembly:getAssembly',
         description: 'Get a specific Assembly by ID hash',
         inputSchema: {
           type: 'object',
@@ -210,7 +214,7 @@ export class CubeTools {
         }
       },
       {
-        name: 'cube:getPlan',
+        name: 'assembly:getPlan',
         description: 'Get a specific Plan by ID hash',
         inputSchema: {
           type: 'object',
@@ -234,11 +238,11 @@ export class CubeTools {
    * @returns {object} MCP-formatted result
    */
   async executeTool(toolName, params, context) {
-    if (!this.cubeManager) {
+    if (!this.assemblyManager) {
       return {
         content: [{
           type: 'text',
-          text: 'CubeManager not initialized - cube tools unavailable'
+          text: 'AssemblyManager not initialized - cube tools unavailable'
         }],
         isError: true
       }
@@ -246,31 +250,31 @@ export class CubeTools {
 
     try {
       switch (toolName) {
-        case 'cube:createSupply':
+        case 'assembly:createSupply':
           return await this.createSupply(params)
 
-        case 'cube:createDemand':
+        case 'assembly:createDemand':
           return await this.createDemand(params)
 
-        case 'cube:createAssembly':
+        case 'assembly:createAssembly':
           return await this.createAssembly(params)
 
-        case 'cube:createPlan':
+        case 'assembly:createPlan':
           return await this.createPlan(params)
 
-        case 'cube:createStory':
+        case 'assembly:createStory':
           return await this.createStory(params)
 
-        case 'cube:queryAssemblies':
+        case 'assembly:queryAssemblies':
           return await this.queryAssemblies(params)
 
-        case 'cube:queryPlans':
+        case 'assembly:queryPlans':
           return await this.queryPlans(params)
 
-        case 'cube:getAssembly':
+        case 'assembly:getAssembly':
           return await this.getAssembly(params)
 
-        case 'cube:getPlan':
+        case 'assembly:getPlan':
           return await this.getPlan(params)
 
         default:
@@ -283,7 +287,7 @@ export class CubeTools {
           }
       }
     } catch (error) {
-      console.error(`[CubeTools] Error executing ${toolName}:`, error)
+      console.error(`[AssemblyTools] Error executing ${toolName}:`, error)
       return {
         content: [{
           type: 'text',
@@ -298,9 +302,9 @@ export class CubeTools {
    * Create a Supply
    */
   async createSupply(params) {
-    console.log('[CubeTools] Creating Supply:', params.name)
+    console.log('[AssemblyTools] Creating Supply:', params.name)
 
-    const result = await this.cubeManager.createSupply({
+    const result = await this.assemblyManager.createSupply({
       name: params.name,
       description: params.description || '',
       metadata: params.metadata ? new Map(Object.entries(params.metadata)) : new Map()
@@ -318,9 +322,9 @@ export class CubeTools {
    * Create a Demand
    */
   async createDemand(params) {
-    console.log('[CubeTools] Creating Demand:', params.name)
+    console.log('[AssemblyTools] Creating Demand:', params.name)
 
-    const result = await this.cubeManager.createDemand({
+    const result = await this.assemblyManager.createDemand({
       name: params.name,
       description: params.description || '',
       metadata: params.metadata ? new Map(Object.entries(params.metadata)) : new Map()
@@ -338,9 +342,9 @@ export class CubeTools {
    * Create an Assembly
    */
   async createAssembly(params) {
-    console.log('[CubeTools] Creating Assembly:', params.name || 'unnamed')
+    console.log('[AssemblyTools] Creating Assembly:', params.name || 'unnamed')
 
-    const result = await this.cubeManager.createAssembly({
+    const result = await this.assemblyManager.createAssembly({
       supply: params.supplyIdHash,
       demand: params.demandIdHash,
       name: params.name,
@@ -359,9 +363,9 @@ export class CubeTools {
    * Create a Plan
    */
   async createPlan(params) {
-    console.log('[CubeTools] Creating Plan:', params.name)
+    console.log('[AssemblyTools] Creating Plan:', params.name)
 
-    const result = await this.cubeManager.createPlan({
+    const result = await this.assemblyManager.createPlan({
       name: params.name,
       description: params.description || '',
       assemblies: params.assemblyIdHashes || [],
@@ -380,9 +384,9 @@ export class CubeTools {
    * Create a Story
    */
   async createStory(params) {
-    console.log('[CubeTools] Creating Story for Assembly:', params.assemblyIdHash)
+    console.log('[AssemblyTools] Creating Story for Assembly:', params.assemblyIdHash)
 
-    const result = await this.cubeManager.createStory({
+    const result = await this.assemblyManager.createStory({
       assembly: params.assemblyIdHash,
       narrative: params.narrative,
       metadata: params.metadata ? new Map(Object.entries(params.metadata)) : new Map()
@@ -400,9 +404,9 @@ export class CubeTools {
    * Query Assemblies
    */
   async queryAssemblies(params) {
-    console.log('[CubeTools] Querying Assemblies')
+    console.log('[AssemblyTools] Querying Assemblies')
 
-    const results = await this.cubeManager.queryAssemblies(params.filter || {})
+    const results = await this.assemblyManager.queryAssemblies(params.filter || {})
     const limited = results.slice(0, params.limit || 10)
 
     if (limited.length === 0) {
@@ -430,9 +434,9 @@ export class CubeTools {
    * Query Plans
    */
   async queryPlans(params) {
-    console.log('[CubeTools] Querying Plans')
+    console.log('[AssemblyTools] Querying Plans')
 
-    const results = await this.cubeManager.queryPlans(params.filter || {})
+    const results = await this.assemblyManager.queryPlans(params.filter || {})
     const limited = results.slice(0, params.limit || 10)
 
     if (limited.length === 0) {
@@ -460,9 +464,9 @@ export class CubeTools {
    * Get specific Assembly
    */
   async getAssembly(params) {
-    console.log('[CubeTools] Getting Assembly:', params.idHash)
+    console.log('[AssemblyTools] Getting Assembly:', params.idHash)
 
-    const assembly = await this.cubeManager.getAssembly(params.idHash)
+    const assembly = await this.assemblyManager.getAssembly(params.idHash)
 
     return {
       content: [{
@@ -476,9 +480,9 @@ export class CubeTools {
    * Get specific Plan
    */
   async getPlan(params) {
-    console.log('[CubeTools] Getting Plan:', params.idHash)
+    console.log('[AssemblyTools] Getting Plan:', params.idHash)
 
-    const plan = await this.cubeManager.getPlan(params.idHash)
+    const plan = await this.assemblyManager.getPlan(params.idHash)
 
     return {
       content: [{
@@ -489,4 +493,4 @@ export class CubeTools {
   }
 }
 
-export default CubeTools
+export default AssemblyTools

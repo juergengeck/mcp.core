@@ -4,7 +4,7 @@
  */
 
 // Re-export tool classes (JS files)
-export { CubeTools } from './CubeTools.js';
+export { AssemblyTools } from './AssemblyTools.js';
 export { MemoryTools } from './MemoryTools.js';
 
 // Plan registry and meta-tools

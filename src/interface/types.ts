@@ -25,6 +25,7 @@ export interface MCPToolParameter {
   type: string;
   description?: string;
   default?: any;
+  enum?: string[];
 }
 
 /**
@@ -88,8 +89,12 @@ export interface MCPToolDependencies {
   leuteModel?: any;
   topicModel?: any;
   connectionsModel?: any;
-  memoryHandler?: any;
-  chatMemoryHandler?: any;
+  memoryPlan?: any;
+  chatMemoryPlan?: any;
+  topicAnalysisPlan?: any;
+  keywordDetailPlan?: any;
+  proposalsPlan?: any;
+  subjectsPlan?: any;
 }
 
 /**
@@ -103,6 +108,9 @@ export type MCPToolCategory =
   | 'llm'
   | 'ai-assistant'
   | 'memory'
+  | 'keywords'
+  | 'proposals'
+  | 'topic-analysis'
   | 'system';
 
 /**

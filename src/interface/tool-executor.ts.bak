@@ -722,11 +722,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
   // Keyword tool implementations
   private async getKeywords(topicId: string, limit = 50): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.getKeywords({ topicId, limit });
+      const result = await this.deps.topicAnalysisModel.getKeywords({ topicId, limit });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -735,11 +735,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async extractKeywords(text: string, limit = 10): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.extractKeywords({ text, limit });
+      const result = await this.deps.topicAnalysisModel.extractKeywords({ text, limit });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -752,11 +752,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     maxKeywords = 15
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.extractRealtimeKeywords({
+      const result = await this.deps.topicAnalysisModel.extractRealtimeKeywords({
         text,
         existingKeywords,
         maxKeywords
@@ -772,11 +772,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     maxKeywords = 15
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.extractConversationKeywords({
+      const result = await this.deps.topicAnalysisModel.extractConversationKeywords({
         topicId,
         maxKeywords
       });
@@ -788,11 +788,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getKeywordDetails(keyword: string, topicId?: string): Promise<MCPToolResult> {
     try {
-      if (!this.deps.keywordDetailPlan) {
+      if (!this.deps.keywordDetailHandler) {
         throw new Error('Keyword detail handler not initialized');
       }
 
-      const result = await this.deps.keywordDetailPlan.getKeywordDetails({ keyword, topicId });
+      const result = await this.deps.keywordDetailHandler.getKeywordDetails({ keyword, topicId });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -807,11 +807,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     state: 'allow' | 'deny' | 'none'
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.keywordDetailPlan) {
+      if (!this.deps.keywordDetailHandler) {
         throw new Error('Keyword detail handler not initialized');
       }
 
-      const result = await this.deps.keywordDetailPlan.updateKeywordAccessState({
+      const result = await this.deps.keywordDetailHandler.updateKeywordAccessState({
         keyword,
         topicId,
         principalId,
@@ -831,11 +831,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     forceRefresh = false
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.proposalsPlan) {
+      if (!this.deps.proposalsHandler) {
         throw new Error('Proposals handler not initialized');
       }
 
-      const result = await this.deps.proposalsPlan.getForTopic({
+      const result = await this.deps.proposalsHandler.getForTopic({
         topicId,
         currentSubjects,
         forceRefresh
@@ -851,11 +851,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     inputText: string
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.proposalsPlan) {
+      if (!this.deps.proposalsHandler) {
         throw new Error('Proposals handler not initialized');
       }
 
-      const result = await this.deps.proposalsPlan.getForInput({ topicId, inputText });
+      const result = await this.deps.proposalsHandler.getForInput({ topicId, inputText });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -869,11 +869,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     includeMessages = false
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.proposalsPlan) {
+      if (!this.deps.proposalsHandler) {
         throw new Error('Proposals handler not initialized');
       }
 
-      const result = await this.deps.proposalsPlan.share({
+      const result = await this.deps.proposalsHandler.share({
         proposalId,
         topicId,
         pastSubjectIdHash,
@@ -891,11 +891,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     pastSubjectIdHash: string
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.proposalsPlan) {
+      if (!this.deps.proposalsHandler) {
         throw new Error('Proposals handler not initialized');
       }
 
-      const result = await this.deps.proposalsPlan.dismiss({
+      const result = await this.deps.proposalsHandler.dismiss({
         proposalId,
         topicId,
         pastSubjectIdHash
@@ -908,11 +908,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getProposalConfig(): Promise<MCPToolResult> {
     try {
-      if (!this.deps.proposalsPlan) {
+      if (!this.deps.proposalsHandler) {
         throw new Error('Proposals handler not initialized');
       }
 
-      const result = await this.deps.proposalsPlan.getConfig({});
+      const result = await this.deps.proposalsHandler.getConfig({});
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -921,11 +921,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async updateProposalConfig(config: Record<string, any>): Promise<MCPToolResult> {
     try {
-      if (!this.deps.proposalsPlan) {
+      if (!this.deps.proposalsHandler) {
         throw new Error('Proposals handler not initialized');
       }
 
-      const result = await this.deps.proposalsPlan.updateConfig({ config });
+      const result = await this.deps.proposalsHandler.updateConfig({ config });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -939,11 +939,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     forceReanalysis = false
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.analyzeMessages({
+      const result = await this.deps.topicAnalysisModel.analyzeMessages({
         topicId,
         messages,
         forceReanalysis
@@ -956,11 +956,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getSubjects(topicId: string, includeArchived = false): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.getSubjects({
+      const result = await this.deps.topicAnalysisModel.getSubjects({
         topicId,
         includeArchived
       });
@@ -976,11 +976,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     includeHistory = false
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.getSummary({
+      const result = await this.deps.topicAnalysisModel.getSummary({
         topicId,
         version,
         includeHistory
@@ -998,11 +998,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     autoGenerate = false
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.updateSummary({
+      const result = await this.deps.topicAnalysisModel.updateSummary({
         topicId,
         content,
         changeReason,
@@ -1016,11 +1016,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getConversationRestartContext(topicId: string): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.getConversationRestartContext({
+      const result = await this.deps.topicAnalysisModel.getConversationRestartContext({
         topicId
       });
       return createTextResult(JSON.stringify(result, null, 2));
@@ -1035,11 +1035,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     subjectId2: string
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.topicAnalysisPlan) {
+      if (!this.deps.topicAnalysisModel) {
         throw new Error('Topic analysis model not initialized');
       }
 
-      const result = await this.deps.topicAnalysisPlan.mergeSubjects({
+      const result = await this.deps.topicAnalysisModel.mergeSubjects({
         topicId,
         subjectId1,
         subjectId2
@@ -1057,11 +1057,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     references?: any[]
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.createSubject({
+      const result = await this.deps.subjectsHandler.createSubject({
         name,
         createdBy,
         confidence,
@@ -1081,11 +1081,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     context?: any
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.attachSubject({
+      const result = await this.deps.subjectsHandler.attachSubject({
         subjectName,
         contentHash,
         attachedBy,
@@ -1100,11 +1100,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getSubjectsForContent(contentHash: string): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.getForContent({ contentHash });
+      const result = await this.deps.subjectsHandler.getForContent({ contentHash });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1113,11 +1113,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async searchSubjects(query: string, limit = 10): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.search({ query, limit });
+      const result = await this.deps.subjectsHandler.search({ query, limit });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1126,11 +1126,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
 
   private async getAllSubjects(): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.getAll({});
+      const result = await this.deps.subjectsHandler.getAll({});
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1142,11 +1142,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     topK = 10
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.getResonance({ subjectNames, topK });
+      const result = await this.deps.subjectsHandler.getResonance({ subjectNames, topK });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);
@@ -1159,11 +1159,11 @@ export class MCPToolExecutor implements IMCPToolExecutor {
     minConfidence = 0.5
   ): Promise<MCPToolResult> {
     try {
-      if (!this.deps.subjectsPlan) {
+      if (!this.deps.subjectsHandler) {
         throw new Error('Subjects handler not initialized');
       }
 
-      const result = await this.deps.subjectsPlan.extract({ text, extractor, minConfidence });
+      const result = await this.deps.subjectsHandler.extract({ text, extractor, minConfidence });
       return createTextResult(JSON.stringify(result, null, 2));
     } catch (error) {
       return createErrorResult(error as Error);

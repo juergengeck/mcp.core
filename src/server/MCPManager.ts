@@ -29,7 +29,7 @@ class MCPManager {
   public tools: Map<string, MCPTool>;
   public isInitialized: boolean;
   public memoryTools: any;
-  public cubeTools: any;
+  public assemblyTools: any;
   public nodeOneCore: any;
 
   constructor() {
@@ -38,7 +38,7 @@ class MCPManager {
     this.servers = [];
     this.isInitialized = false;
     this.memoryTools = null;
-    this.cubeTools = null;
+    this.assemblyTools = null;
     this.nodeOneCore = null;
   }
 
@@ -484,26 +484,26 @@ class MCPManager {
         console.error('[MCPManager] Failed to load memory tools:', err);
       });
 
-      // Initialize cube tools
-      import('../tools/CubeTools.js').then(async ({ CubeTools }) => {
-        this.cubeTools = new CubeTools(nodeOneCore);
-        await this.cubeTools.init();
+      // Initialize assembly tools
+      import('../tools/AssemblyTools.js').then(async ({ AssemblyTools }) => {
+        this.assemblyTools = new AssemblyTools(nodeOneCore);
+        await this.assemblyTools.init();
 
-        // Register cube tool definitions
-        const toolDefs = this.cubeTools.getToolDefinitions();
+        // Register assembly tool definitions
+        const toolDefs = this.assemblyTools.getToolDefinitions();
         for (const toolDef of toolDefs) {
           this.tools.set(toolDef.name, {
             name: toolDef.name,
             fullName: toolDef.name,
             description: toolDef.description,
             inputSchema: toolDef.inputSchema,
-            server: 'cube' // Virtual server for cube tools
+            server: 'assembly' // Virtual server for assembly tools
           });
         }
 
-        console.log(`[MCPManager] Registered ${toolDefs.length} cube tools`);
+        console.log(`[MCPManager] Registered ${toolDefs.length} assembly tools`);
       }).catch(err => {
-        console.error('[MCPManager] Failed to load cube tools:', err);
+        console.error('[MCPManager] Failed to load assembly tools:', err);
       });
     }
   }
@@ -690,16 +690,16 @@ class MCPManager {
       }
     }
 
-    // Handle cube tools (virtual server)
-    if (toolData.server === 'cube') {
-      if (!this.cubeTools) {
-        throw new Error('Cube tools not initialized - ONE.core may not be ready');
+    // Handle assembly tools (virtual server)
+    if (toolData.server === 'assembly') {
+      if (!this.assemblyTools) {
+        throw new Error('Assembly tools not initialized - ONE.core may not be ready');
       }
 
       console.log(`[MCPManager] Executing cube tool ${toolName} with params:`, parameters);
 
       try {
-        const result = await this.cubeTools.executeTool(toolName, parameters, context);
+        const result = await this.assemblyTools.executeTool(toolName, parameters, context);
         console.log(`[MCPManager] Cube tool ${toolName} executed successfully`);
         return result;
       } catch (error) {

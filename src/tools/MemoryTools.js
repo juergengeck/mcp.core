@@ -253,12 +253,34 @@ export class MemoryTools {
       }
 
       // Format subjects with their keywords
+      // NOTE: subject.keywords contains Keyword hashes (content hashes, not ID hashes!)
       const activeSubjects = subjects.filter(s => !s.archived)
-      const formatted = activeSubjects.map((subject, idx) => {
-        const keywords = subject.keywords?.join(', ') || 'no keywords'
+      const { getObject } = await import('@refinio/one.core/lib/storage-base-common.js')
+
+      const formattedPromises = activeSubjects.map(async (subject, idx) => {
+        let keywords = 'no keywords'
+        if (subject.keywords && Array.isArray(subject.keywords) && subject.keywords.length > 0) {
+          // Hydrate keyword hashes to get actual terms
+          const keywordTerms = []
+          for (const keywordHash of subject.keywords.slice(0, 10)) { // Limit to first 10
+            try {
+              const keywordObj = await getObject(keywordHash)
+              if (keywordObj && keywordObj.term) {
+                keywordTerms.push(keywordObj.term)
+              }
+            } catch (e) {
+              // Skip if keyword can't be loaded
+              console.warn(`[MemoryTools] Failed to load keyword ${keywordHash}:`, e.message)
+            }
+          }
+          keywords = keywordTerms.length > 0 ? keywordTerms.join(', ') : 'no keywords'
+        }
         const desc = subject.description || 'no description'
-        return `[${idx + 1}] ${subject.keywordCombination || subject.name}\n   Keywords: ${keywords}\n   ${desc}`
-      }).join('\n\n')
+        return `[${idx + 1}] ${subject.id}\n   Keywords: ${keywords}\n   ${desc}`
+      })
+
+      const formattedArray = await Promise.all(formattedPromises)
+      const formatted = formattedArray.join('\n\n')
 
       return {
         content: [{

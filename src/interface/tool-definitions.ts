@@ -452,6 +452,565 @@ export const memoryTools: ToolDefinitionWithCategory[] = [
 ];
 
 /**
+ * Keyword Tools
+ * Tools for keyword extraction and management
+ */
+export const keywordTools: ToolDefinitionWithCategory[] = [
+  {
+    name: 'get_keywords',
+    category: 'keywords',
+    description: 'Get all keywords for a topic',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to get keywords from'
+        },
+        limit: {
+          type: 'number',
+          description: 'Maximum number of keywords to return',
+          default: 50
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'extract_keywords',
+    category: 'keywords',
+    description: 'Extract keywords from text using LLM',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        text: {
+          type: 'string',
+          description: 'Text to extract keywords from'
+        },
+        limit: {
+          type: 'number',
+          description: 'Maximum number of keywords to extract',
+          default: 10
+        }
+      },
+      required: ['text']
+    }
+  },
+  {
+    name: 'extract_realtime_keywords',
+    category: 'keywords',
+    description: 'Extract single-word keywords for real-time display',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        text: {
+          type: 'string',
+          description: 'Text to extract keywords from'
+        },
+        existingKeywords: {
+          type: 'array',
+          description: 'Existing keywords to exclude from results',
+          default: []
+        },
+        maxKeywords: {
+          type: 'number',
+          description: 'Maximum number of keywords to extract',
+          default: 15
+        }
+      },
+      required: ['text']
+    }
+  },
+  {
+    name: 'extract_conversation_keywords',
+    category: 'keywords',
+    description: 'Extract keywords from all messages in a conversation',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to extract keywords from'
+        },
+        maxKeywords: {
+          type: 'number',
+          description: 'Maximum number of keywords to extract',
+          default: 15
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'get_keyword_details',
+    category: 'keywords',
+    description: 'Get keyword details with subjects, access states, and topic references',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        keyword: {
+          type: 'string',
+          description: 'Keyword to get details for'
+        },
+        topicId: {
+          type: 'string',
+          description: 'Optional topic ID for context'
+        }
+      },
+      required: ['keyword']
+    }
+  },
+  {
+    name: 'update_keyword_access_state',
+    category: 'keywords',
+    description: 'Update or create access state for a keyword and principal',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        keyword: {
+          type: 'string',
+          description: 'Keyword to update access state for'
+        },
+        topicId: {
+          type: 'string',
+          description: 'Topic ID'
+        },
+        principalId: {
+          type: 'string',
+          description: 'Principal (user/group) ID'
+        },
+        principalType: {
+          type: 'string',
+          description: 'Principal type',
+          enum: ['user', 'group']
+        },
+        state: {
+          type: 'string',
+          description: 'Access state',
+          enum: ['allow', 'deny', 'none']
+        }
+      },
+      required: ['keyword', 'topicId', 'principalId', 'principalType', 'state']
+    }
+  }
+];
+
+/**
+ * Proposal Tools
+ * Tools for context-aware suggestions
+ */
+export const proposalTools: ToolDefinitionWithCategory[] = [
+  {
+    name: 'get_proposals_for_topic',
+    category: 'proposals',
+    description: 'Get proposals for a specific topic',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to get proposals for'
+        },
+        currentSubjects: {
+          type: 'array',
+          description: 'Current subject ID hashes in the conversation'
+        },
+        forceRefresh: {
+          type: 'boolean',
+          description: 'Force refresh instead of using cache',
+          default: false
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'get_proposals_for_input',
+    category: 'proposals',
+    description: 'Get proposals based on user input text (real-time)',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID'
+        },
+        inputText: {
+          type: 'string',
+          description: 'User input text to analyze'
+        }
+      },
+      required: ['topicId', 'inputText']
+    }
+  },
+  {
+    name: 'share_proposal',
+    category: 'proposals',
+    description: 'Share a proposal into the current conversation',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        proposalId: {
+          type: 'string',
+          description: 'Proposal ID to share'
+        },
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to share into'
+        },
+        pastSubjectIdHash: {
+          type: 'string',
+          description: 'Subject ID hash from the past conversation'
+        },
+        includeMessages: {
+          type: 'boolean',
+          description: 'Include messages from past conversation',
+          default: false
+        }
+      },
+      required: ['proposalId', 'topicId', 'pastSubjectIdHash']
+    }
+  },
+  {
+    name: 'dismiss_proposal',
+    category: 'proposals',
+    description: 'Dismiss a proposal for the current session',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        proposalId: {
+          type: 'string',
+          description: 'Proposal ID to dismiss'
+        },
+        topicId: {
+          type: 'string',
+          description: 'Topic ID'
+        },
+        pastSubjectIdHash: {
+          type: 'string',
+          description: 'Subject ID hash'
+        }
+      },
+      required: ['proposalId', 'topicId', 'pastSubjectIdHash']
+    }
+  },
+  {
+    name: 'get_proposal_config',
+    category: 'proposals',
+    description: 'Get current user proposal configuration',
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
+  },
+  {
+    name: 'update_proposal_config',
+    category: 'proposals',
+    description: 'Update user proposal configuration',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        config: {
+          type: 'object',
+          description: 'Partial config to update'
+        }
+      },
+      required: ['config']
+    }
+  }
+];
+
+/**
+ * Topic Analysis Tools
+ * Tools for analyzing topics (subjects, summaries)
+ */
+export const topicAnalysisTools: ToolDefinitionWithCategory[] = [
+  {
+    name: 'analyze_messages',
+    category: 'topic-analysis',
+    description: 'Analyze messages to extract subjects and keywords',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to analyze'
+        },
+        messages: {
+          type: 'array',
+          description: 'Optional specific messages to analyze'
+        },
+        forceReanalysis: {
+          type: 'boolean',
+          description: 'Force reanalysis even if cached',
+          default: false
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'get_subjects',
+    category: 'topic-analysis',
+    description: 'Get all subjects for a topic',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to get subjects from'
+        },
+        includeArchived: {
+          type: 'boolean',
+          description: 'Include archived subjects',
+          default: false
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'get_summary',
+    category: 'topic-analysis',
+    description: 'Get summary for a topic',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to get summary for'
+        },
+        version: {
+          type: 'number',
+          description: 'Optional specific version number'
+        },
+        includeHistory: {
+          type: 'boolean',
+          description: 'Include version history',
+          default: false
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'update_summary',
+    category: 'topic-analysis',
+    description: 'Update or create summary for a topic',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to update summary for'
+        },
+        content: {
+          type: 'string',
+          description: 'Summary content'
+        },
+        changeReason: {
+          type: 'string',
+          description: 'Reason for the change'
+        },
+        autoGenerate: {
+          type: 'boolean',
+          description: 'Auto-generate summary from messages',
+          default: false
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'get_conversation_restart_context',
+    category: 'topic-analysis',
+    description: 'Generate conversation restart context for LLM continuity',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID to get context for'
+        }
+      },
+      required: ['topicId']
+    }
+  },
+  {
+    name: 'merge_subjects',
+    category: 'topic-analysis',
+    description: 'Merge two subjects into one',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topicId: {
+          type: 'string',
+          description: 'Topic ID'
+        },
+        subjectId1: {
+          type: 'string',
+          description: 'First subject ID to merge'
+        },
+        subjectId2: {
+          type: 'string',
+          description: 'Second subject ID to merge'
+        }
+      },
+      required: ['topicId', 'subjectId1', 'subjectId2']
+    }
+  },
+  {
+    name: 'create_subject',
+    category: 'topic-analysis',
+    description: 'Create or update a subject',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          description: 'Subject name'
+        },
+        createdBy: {
+          type: 'string',
+          description: 'Creator identifier'
+        },
+        confidence: {
+          type: 'number',
+          description: 'Confidence score (0-1)',
+          default: 1.0
+        },
+        references: {
+          type: 'array',
+          description: 'Reference objects'
+        }
+      },
+      required: ['name', 'createdBy']
+    }
+  },
+  {
+    name: 'attach_subject',
+    category: 'topic-analysis',
+    description: 'Attach subject to content',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        subjectName: {
+          type: 'string',
+          description: 'Subject name to attach'
+        },
+        contentHash: {
+          type: 'string',
+          description: 'Content hash to attach to'
+        },
+        attachedBy: {
+          type: 'string',
+          description: 'Attacher identifier'
+        },
+        confidence: {
+          type: 'number',
+          description: 'Confidence score (0-1)',
+          default: 1.0
+        },
+        context: {
+          type: 'object',
+          description: 'Attachment context'
+        }
+      },
+      required: ['subjectName', 'contentHash', 'attachedBy']
+    }
+  },
+  {
+    name: 'get_subjects_for_content',
+    category: 'topic-analysis',
+    description: 'Get subjects attached to content',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        contentHash: {
+          type: 'string',
+          description: 'Content hash to get subjects for'
+        }
+      },
+      required: ['contentHash']
+    }
+  },
+  {
+    name: 'search_subjects',
+    category: 'topic-analysis',
+    description: 'Search subjects by query',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'Search query'
+        },
+        limit: {
+          type: 'number',
+          description: 'Maximum number of results',
+          default: 10
+        }
+      },
+      required: ['query']
+    }
+  },
+  {
+    name: 'get_all_subjects',
+    category: 'topic-analysis',
+    description: 'Get all subjects across all topics',
+    inputSchema: {
+      type: 'object',
+      properties: {}
+    }
+  },
+  {
+    name: 'get_subject_resonance',
+    category: 'topic-analysis',
+    description: 'Get subject resonance/relationships',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        subjectNames: {
+          type: 'array',
+          description: 'Subject names to analyze'
+        },
+        topK: {
+          type: 'number',
+          description: 'Number of top related subjects',
+          default: 10
+        }
+      },
+      required: ['subjectNames']
+    }
+  },
+  {
+    name: 'extract_subjects',
+    category: 'topic-analysis',
+    description: 'Extract subjects from text',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        text: {
+          type: 'string',
+          description: 'Text to extract subjects from'
+        },
+        extractor: {
+          type: 'string',
+          description: 'Extractor type/model to use',
+          default: 'llm'
+        },
+        minConfidence: {
+          type: 'number',
+          description: 'Minimum confidence threshold',
+          default: 0.5
+        }
+      },
+      required: ['text']
+    }
+  }
+];
+
+/**
  * All available tool definitions
  */
 export const allTools: ToolDefinitionWithCategory[] = [
@@ -460,7 +1019,10 @@ export const allTools: ToolDefinitionWithCategory[] = [
   ...connectionTools,
   ...llmTools,
   ...aiAssistantTools,
-  ...memoryTools
+  ...memoryTools,
+  ...keywordTools,
+  ...proposalTools,
+  ...topicAnalysisTools
 ];
 
 /**
