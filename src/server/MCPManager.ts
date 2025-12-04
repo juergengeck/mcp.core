@@ -560,10 +560,7 @@ class MCPManager {
         name: `lama-electron-${server.name}`,
         version: '1.0.0'
       }, {
-        capabilities: {
-          tools: {},
-          prompts: {}
-        }
+        capabilities: {}  // MCP SDK API changed - tools/prompts no longer valid in capabilities
       });
       
       await client.connect(transport);
