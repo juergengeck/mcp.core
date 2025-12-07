@@ -1,6 +1,7 @@
 import type { ConnectionsModel } from '@refinio/one.models/lib/models/index.js';
 /**
- * LAMA Application MCP Server
+ * MCPLocalServer
+ * Local MCP server for Node.js - provides access to LAMA features via MCP protocol
  * Provides access to LAMA-specific features like chat, contacts, connections, etc.
  *
  * ⚠️ SECURITY WARNING: NO ACCESS CONTROL IMPLEMENTED
@@ -32,7 +33,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { MCPToolInterface } from '../interface/mcp-tool-interface.js';
 
-export class LamaMCPServer {
+export class MCPLocalServer {
   public nodeOneCore: any;
   public server: any;
 
@@ -71,11 +72,11 @@ export class LamaMCPServer {
     // Check if nodeOneCore already has MCP client identity (set by standalone server)
     if ((this.nodeOneCore as any).mcpClientPersonId) {
       this.mcpClientPersonId = (this.nodeOneCore as any).mcpClientPersonId;
-      console.error(`[LamaMCPServer] Using MCP client identity from proxy: ${this.mcpClientPersonId}`);
+      console.error(`[MCPLocalServer] Using MCP client identity from proxy: ${this.mcpClientPersonId}`);
       return;
     }
 
-    console.error('[LamaMCPServer] No MCP client identity available, messages will use owner identity');
+    console.error('[MCPLocalServer] No MCP client identity available, messages will use owner identity');
   }
 
   setupTools(): any {
@@ -959,8 +960,8 @@ export class LamaMCPServer {
     // Initialize MCP client identity after connection
     await this.initializeMCPClientIdentity();
 
-    console.error('[LamaMCPServer] ✅ LAMA MCP Server started');
+    console.error('[MCPLocalServer] ✅ LAMA MCP Server started');
   }
 }
 
-export default LamaMCPServer;
+export default MCPLocalServer;

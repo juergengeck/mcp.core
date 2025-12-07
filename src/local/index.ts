@@ -7,3 +7,6 @@
 
 export * from './MCPManager.js';
 export { default as mcpManager } from './MCPManager.js';
+
+export * from './MCPLocalServer.js';
+export { default as MCPLocalServer } from './MCPLocalServer.js';
