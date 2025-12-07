@@ -6,7 +6,8 @@
  */
 
 import type { SHA256Hash, SHA256IdHash } from '@refinio/one.core/lib/util/type-checks.js';
-import { storeVersionedObject, getObject } from '@refinio/one.core/lib/storage-versioned-objects.js';
+import { storeVersionedObject } from '@refinio/one.core/lib/storage-versioned-objects.js';
+import { getObject } from '@refinio/one.core/lib/storage-unversioned-objects.js';
 import type { MCPRequest, MCPResponse, MCPToolResultObject } from '../remote/types.js';
 import type { MCPSupplyManager } from './MCPSupplyManager.js';
 import type { MCPToolExecutor } from '../types/mcp-types.js';
