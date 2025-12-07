@@ -13,9 +13,21 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./server/*": {
-      "import": "./dist/server/*.js",
-      "types": "./dist/server/*.d.ts"
+    "./local": {
+      "import": "./dist/local/index.js",
+      "types": "./dist/local/index.d.ts"
+    },
+    "./local/*": {
+      "import": "./dist/local/*.js",
+      "types": "./dist/local/*.d.ts"
+    },
+    "./remote": {
+      "import": "./dist/remote/index.js",
+      "types": "./dist/remote/index.d.ts"
+    },
+    "./remote/*": {
+      "import": "./dist/remote/*.js",
+      "types": "./dist/remote/*.d.ts"
     },
     "./tools/*": {
       "import": "./dist/tools/*.js",
