@@ -13,3 +13,6 @@ export { default as MCPLocalServer } from './MCPLocalServer.js';
 
 export * from './MCPSupplyManager.js';
 export { default as MCPSupplyManager } from './MCPSupplyManager.js';
+
+export * from './MCPRemoteHandler.js';
+export { default as MCPRemoteHandler } from './MCPRemoteHandler.js';
