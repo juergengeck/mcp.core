@@ -10,3 +10,5 @@ export * from './MCPCredentialCache.js';
 export { default as MCPCredentialCache } from './MCPCredentialCache.js';
 export * from './MCPDemandManager.js';
 export { default as MCPDemandManager } from './MCPDemandManager.js';
+export * from './MCPRemoteClient.js';
+export { default as MCPRemoteClient } from './MCPRemoteClient.js';
