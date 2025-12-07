@@ -12,7 +12,7 @@
 export * from './interface/index.js';
 export * from './tools/index.js';
 export * from './recipes/mcp-recipes.js';
-export * from './types/mcp-types.js';
+// Note: types/mcp-types.js exports are already covered by interface/index.js
 
 // Re-export remote types (platform-agnostic)
 export * from './remote/types.js';
