@@ -10,3 +10,6 @@ export { default as mcpManager } from './MCPManager.js';
 
 export * from './MCPLocalServer.js';
 export { default as MCPLocalServer } from './MCPLocalServer.js';
+
+export * from './MCPSupplyManager.js';
+export { default as MCPSupplyManager } from './MCPSupplyManager.js';
