@@ -176,9 +176,195 @@ export const MCPToolCallRecipe = {
   ]
 };
 
+/**
+ * MCPSupply - Node.js user offers MCP service in a topic
+ */
+export const MCPSupplyRecipe = {
+  $type$: 'Recipe',
+  name: 'MCPSupply',
+  rule: [
+    {
+      itemprop: 'topicId',
+      isId: true,
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'providerPersonId',
+      isId: true,
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'allowedTools',
+      itemtype: {
+        type: 'bag',
+        item: { type: 'string' }
+      },
+      optional: true
+    },
+    {
+      itemprop: 'createdAt',
+      itemtype: { type: 'number' }
+    }
+  ]
+};
+
+/**
+ * MCPDemand - Remote user requests MCP access in a topic
+ */
+export const MCPDemandRecipe = {
+  $type$: 'Recipe',
+  name: 'MCPDemand',
+  rule: [
+    {
+      itemprop: 'topicId',
+      isId: true,
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'requesterPersonId',
+      isId: true,
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'createdAt',
+      itemtype: { type: 'number' }
+    }
+  ]
+};
+
+/**
+ * MCPCredential - Issued when Supply matches Demand
+ */
+export const MCPCredentialRecipe = {
+  $type$: 'Recipe',
+  name: 'MCPCredential',
+  rule: [
+    {
+      itemprop: 'topicId',
+      isId: true,
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'providerPersonId',
+      isId: true,
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'consumerPersonId',
+      isId: true,
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'allowedTools',
+      itemtype: {
+        type: 'bag',
+        item: { type: 'string' }
+      },
+      optional: true
+    },
+    {
+      itemprop: 'issuedAt',
+      itemtype: { type: 'number' }
+    },
+    {
+      itemprop: 'revokedAt',
+      itemtype: { type: 'number' },
+      optional: true
+    }
+  ]
+};
+
+/**
+ * MCPRequest - Chat message requesting tool execution
+ */
+export const MCPRequestRecipe = {
+  $type$: 'Recipe',
+  name: 'MCPRequest',
+  rule: [
+    {
+      itemprop: 'targetPersonId',
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'toolCall',
+      isId: true,
+      itemtype: {
+        type: 'referenceToObj',
+        allowedTypes: new Set(['MCPToolCall'])
+      }
+    }
+  ]
+};
+
+/**
+ * MCPResponse - Chat message with tool execution result
+ */
+export const MCPResponseRecipe = {
+  $type$: 'Recipe',
+  name: 'MCPResponse',
+  rule: [
+    {
+      itemprop: 'toolCall',
+      isId: true,
+      itemtype: {
+        type: 'referenceToObj',
+        allowedTypes: new Set(['MCPToolCall'])
+      }
+    },
+    {
+      itemprop: 'result',
+      itemtype: {
+        type: 'referenceToObj',
+        allowedTypes: new Set(['MCPToolResult'])
+      }
+    }
+  ]
+};
+
+/**
+ * MCPToolResult - Stored result of tool execution (for remote)
+ */
+export const MCPToolResultRecipe = {
+  $type$: 'Recipe',
+  name: 'MCPToolResult',
+  rule: [
+    {
+      itemprop: 'toolCallHash',
+      isId: true,
+      itemtype: {
+        type: 'referenceToObj',
+        allowedTypes: new Set(['MCPToolCall'])
+      }
+    },
+    {
+      itemprop: 'success',
+      itemtype: { type: 'boolean' }
+    },
+    {
+      itemprop: 'content',
+      itemtype: { type: 'string' }
+    },
+    {
+      itemprop: 'error',
+      itemtype: { type: 'string' },
+      optional: true
+    },
+    {
+      itemprop: 'executionTime',
+      itemtype: { type: 'number' }
+    }
+  ]
+};
+
 export const MCPRecipes = [
   MCPServerRecipe,
   MCPServerConfigRecipe,
   MCPTopicConfigRecipe,
-  MCPToolCallRecipe
+  MCPToolCallRecipe,
+  MCPSupplyRecipe,
+  MCPDemandRecipe,
+  MCPCredentialRecipe,
+  MCPRequestRecipe,
+  MCPResponseRecipe,
+  MCPToolResultRecipe
 ];
