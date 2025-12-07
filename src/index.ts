@@ -1,20 +1,21 @@
 /**
- * mcp.core - Platform-agnostic Model Context Protocol integration
+ * mcp.core - Model Context Protocol integration for LAMA
  *
- * Provides MCP server, tools, and interfaces for exposing
- * LAMA functionality to LLMs.
+ * Submodules:
+ * - @mcp/core/local - Node.js only, local MCP execution
+ * - @mcp/core/remote - All platforms, remote MCP via chat
+ *
+ * Common exports available from main entry point.
  */
 
-// Server
-export * from './server/MCPManager.js';
-export { default as mcpManager } from './server/MCPManager.js';
-export * from './server/MCPLamaServer.js';
-
-// Tools
-export * from './tools/index.js';
-
-// Interface (tool definitions and execution)
+// Common exports (platform-agnostic)
 export * from './interface/index.js';
-
-// Recipes
+export * from './tools/index.js';
 export * from './recipes/mcp-recipes.js';
+export * from './types/mcp-types.js';
+
+// Re-export remote types (platform-agnostic)
+export * from './remote/types.js';
+
+// Note: local/ exports require Node.js - import directly:
+// import { MCPManager, MCPLocalServer } from '@mcp/core/local';
