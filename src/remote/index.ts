@@ -6,3 +6,5 @@
  */
 
 export * from './types.js';
+export * from './MCPCredentialCache.js';
+export { default as MCPCredentialCache } from './MCPCredentialCache.js';
