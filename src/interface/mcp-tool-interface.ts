@@ -1,33 +1,32 @@
 /**
  * MCP Tool Interface for lama.core
- * Platform-agnostic interface for MCP tool management and execution
+ * Platform-agnostic interface for MCP tool discovery and schema
  *
  * This provides a unified way for platforms to:
- * - Register and manage tools
- * - Execute tools with dependency injection
+ * - Discover available tools and their schemas
  * - Convert tools to MCP/Assistant formats
+ * - Generate tool description text for LLMs
+ *
+ * For tool EXECUTION, use the adapters from @mcp/core/router:
+ * - MCPLocalAdapter: For local MCP server (stdio)
+ * - MCPRemoteAdapter: For remote MCP over chat
+ * - IPCAdapter: For Electron IPC
  */
 
 import type {
   MCPToolDefinition,
-  MCPToolResult,
-  MCPToolContext,
-  MCPToolDependencies,
   MCPToolCategory
 } from './types.js';
-import { MCPToolExecutor } from './tool-executor.js';
 import { allTools, getToolDefinition, getToolsByCategory } from './tool-definitions.js';
 
 /**
  * MCP Tool Interface
- * Main interface for interacting with LAMA tools via MCP
+ * Interface for tool discovery and schema (not execution)
  */
 export class MCPToolInterface {
-  private executor: MCPToolExecutor;
   private enabledCategories: Set<MCPToolCategory>;
 
-  constructor(dependencies: MCPToolDependencies) {
-    this.executor = new MCPToolExecutor(dependencies);
+  constructor() {
     this.enabledCategories = new Set(['chat', 'contacts', 'connections', 'llm', 'ai-assistant']);
   }
 
@@ -54,30 +53,6 @@ export class MCPToolInterface {
   hasTool(toolName: string): boolean {
     const tool = getToolDefinition(toolName);
     return tool !== undefined && this.enabledCategories.has(tool.category);
-  }
-
-  /**
-   * Execute a tool
-   */
-  async executeTool(
-    toolName: string,
-    parameters: Record<string, any>,
-    context?: MCPToolContext
-  ): Promise<MCPToolResult> {
-    const tool = getToolDefinition(toolName);
-    if (!tool || !this.enabledCategories.has(tool.category)) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: `Error: Tool ${toolName} not available`
-          }
-        ],
-        isError: true
-      };
-    }
-
-    return await this.executor.execute(toolName, parameters, context);
   }
 
   /**
@@ -194,8 +169,8 @@ export class MCPToolInterface {
 }
 
 /**
- * Create a new MCP Tool Interface with dependencies
+ * Create a new MCP Tool Interface
  */
-export function createMCPToolInterface(dependencies: MCPToolDependencies): MCPToolInterface {
-  return new MCPToolInterface(dependencies);
+export function createMCPToolInterface(): MCPToolInterface {
+  return new MCPToolInterface();
 }

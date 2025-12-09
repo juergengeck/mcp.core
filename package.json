@@ -5,6 +5,10 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "bin"
+  ],
   "bin": {
     "lama-mcp-server": "./bin/lama-mcp-server.js"
   },
@@ -40,6 +44,18 @@
     "./recipes/*": {
       "import": "./dist/recipes/*.js",
       "types": "./dist/recipes/*.d.ts"
+    },
+    "./router": {
+      "import": "./dist/router/index.js",
+      "types": "./dist/router/index.d.ts"
+    },
+    "./policy": {
+      "import": "./dist/policy/index.js",
+      "types": "./dist/policy/index.d.ts"
+    },
+    "./audit": {
+      "import": "./dist/audit/index.js",
+      "types": "./dist/audit/index.d.ts"
     }
   },
   "scripts": {

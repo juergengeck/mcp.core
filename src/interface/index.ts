@@ -3,20 +3,10 @@
  *
  * Platform-agnostic Model Context Protocol integration components
  *
- * Usage:
- * ```typescript
- * import { createMCPToolInterface, MCPToolExecutor } from '@lama/core/services/mcp';
- *
- * const toolInterface = createMCPToolInterface({
- *   nodeOneCore,
- *   aiAssistantModel
- * });
- *
- * const result = await toolInterface.executeTool('send_message', {
- *   topicId: '...',
- *   message: 'Hello!'
- * });
- * ```
+ * For tool execution, use the adapters from @mcp/core/router:
+ * - MCPLocalAdapter: For local MCP server (stdio)
+ * - MCPRemoteAdapter: For remote MCP over chat
+ * - IPCAdapter: For Electron IPC
  */
 
 // Types
@@ -31,7 +21,7 @@ export type {
   MCPToolRegistration
 } from './types.js';
 
-// Tool Definitions
+// Tool Definitions (schema only, execution via adapters)
 export {
   chatTools,
   contactTools,
@@ -45,8 +35,5 @@ export {
 } from './tool-definitions.js';
 export type { ToolDefinitionWithCategory } from './tool-definitions.js';
 
-// Tool Executor
-export { MCPToolExecutor } from './tool-executor.js';
-
-// Tool Interface
+// Tool Interface (for tool discovery/schema)
 export { MCPToolInterface, createMCPToolInterface } from './mcp-tool-interface.js';
